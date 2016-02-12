@@ -1,0 +1,9 @@
+Selecting of shapes.
+EduCanvas.select_clicked_on()
+
+Colour of line and fill
+EduShape.draw_shape()
+Temp fix: Hardcoded the colours
+
+Improve drawing modes
+EduCanvas.create_shape()
