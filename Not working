@@ -9,6 +9,8 @@ Just the one you drag with mouse moves, rest get deselected
 When multiple shapes are selected, and we toggle, all get toggled;
 Instead it should get all to same mode on first click, then toggle from next
 
+When shapes overlap, and one is selected, and you try to move the other, it gets a little wonky
+
 
 
 TODO
