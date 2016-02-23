@@ -1,12 +1,12 @@
 #!/usr/bin/python
+from edushapes import *
 
 from kivy.app import App
-from kivy.properties import ListProperty, Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.core.window import Window
-from kivy.graphics import Color, Rectangle, Line, Ellipse
+from kivy.graphics import Rectangle
 
 # Declaring some constant colours. Not working right
 RED = (1, 0, 0)
@@ -14,214 +14,6 @@ WHITE = (1, 1, 1)
 GREEN = (0, 1, 0)
 BLUE = (0, 0, 1)
 YELLOW = (1, 1, 0)
-
-
-class EduShape(Widget):
-    """
-        All drawable shapes will be of this type. It is assumed that they all
-        have bounding boxes and behave in the same way.
-        They have x,y positions as well as width,height properties.
-        They also have a line and fill colour, though those functions dont
-        work right now.
-    """
-
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
-        # Initializing
-        super(EduShape, self).__init__()
-        self.x = touch_down[0]
-        self.y = touch_down[1]
-
-        self.width = touch_up[0] - touch_down[0]
-        self.height = touch_up[1] - touch_down[1]
-
-        self.reallign_shape()
-
-        self.selected = False
-        self.line = line_colour  # Colour or False if none
-        self.fill = fill_colour  # Colour or False if none
-
-        self.reshape_circles = ReshapeCirclesParent(self)
-
-    def clicked_on(self, x, y):
-        # collide_point() doesn't seem to work correctly,
-        # so wrote a function specifically
-        return (self.x < x < self.x + self.width) \
-            and (self.y < y < self.y + self.height)
-
-    def reallign_shape(self):
-        # The operations are to make sure that heights and widths
-        # are positive, to make further operations simpler
-        if self.width < 0:
-            self.width = abs(self.width)
-            self.x -= self.width
-        if self.height < 0:
-            self.height = abs(self.height)
-            self.y -= self.height
-
-    def move_shape(self, touch):
-        # Temporary. Moves shape by center rather than point on which was clicked
-        self.x = touch.x - self.width/2
-        self.y = touch.y - self.height/2
-        self.reshape_circles = ReshapeCirclesParent(self)
-
-    def reshape(self, touch, circle_index):
-
-        def reshape_right():
-            self.width = touch.x - self.x
-
-        def reshape_left():
-            self.width += self.x - touch.x
-            self.x = touch.x
-
-        def reshape_top():
-            self.height = touch.y - self.y
-
-        def reshape_bottom():
-            self.height += self.y - touch.y
-            self.y = touch.y
-
-        if circle_index == 1:       # Bottom Left Corner
-            reshape_bottom()
-            reshape_left()
-
-        elif circle_index == 2:     # Bottom Right Corner
-            reshape_bottom()
-            reshape_right()
-
-        elif circle_index == 3:     # Top Right Corner
-            reshape_top()
-            reshape_right()
-
-        elif circle_index == 4:     # Top Left Corner
-            reshape_top()
-            reshape_left()
-
-        elif circle_index == 5:     # Bottom Side
-            reshape_bottom()
-
-        elif circle_index == 6:     # Right Side
-            reshape_right()
-
-        elif circle_index == 7:     # Top Side
-            reshape_top()
-
-        elif circle_index == 8:     # Left Side
-            reshape_left()
-
-        self.reshape_circles = ReshapeCirclesParent(self)
-
-
-class EducorderSelectionRectangle(EduShape):
-    """
-        Selection Box
-    """
-
-    def draw_shape(self):
-        # Draws rectangle based on line and fill colours
-        # Doesn't work right now, so we're just using hardcoded colours for now
-            Color(0, 0, 0)
-            Line(rectangle=(self.x, self.y, self.width, self.height), dash_offset=2, dash_length=4)
-
-
-class EducorderRectangle(EduShape):
-    """
-        Basic Rectangle Shape
-    """
-
-    def draw_shape(self):
-        # Draws rectangle based on line and fill colours
-        # Doesn't work right now, so we're just using hardcoded colours for now
-        if self.fill:
-            Color(1, 0, 0)
-            Rectangle(pos=(self.x, self.y), size=(self.width, self.height))
-        if self.line:
-            Color(0, 0, 0)
-            Line(rectangle=(self.x, self.y, self.width, self.height))
-        if self.selected:
-            self.reshape_circles.reshape_draw()
-
-
-class EducorderEllipse(EduShape):
-    """
-        Basic Ellipse Shape
-    """
-
-    def draw_shape(self):
-        # Draws ellipse based on line and fill colours
-        if self.fill:
-            Color(1, 0, 0)
-            Ellipse(pos=(self.x, self.y), size=(self.width, self.height))
-        if self.line:
-            Color(0, 0, 0)
-            Line(ellipse=(self.x, self.y, self.width, self.height))
-        if self.selected:
-            # Maybe put the shape changing circles in here
-            pass
-
-
-class ReshapeCirclesParent(Widget):
-    """
-        The small circles in the corners that you drag
-    """
-    def __init__(self, eduShape):
-        self.dia = 10
-        self.width = eduShape.width
-        self.height = eduShape.height
-        self.shape = eduShape
-
-        # List to hold all the circles
-        # 0 - Off Screen, because we will use index of this list as an if condition,
-        #  and 0 will be false value
-        # 1 - Bottom Left Corner
-        # 2 - Bottom Right Corner
-        # 3 - Top Right Corner
-        # 4 - Top Left Corner
-        # 5 - Bottom Side
-        # 6 - Right Side
-        # 7 - Top Side
-        # 8 - Left Side
-
-        self.circles = [ReshapeCircles(-5, -5, 3)]
-        # Corners
-        self.circles.append(ReshapeCircles(self.shape.x-(self.dia/2), self.shape.y-(self.dia/2), self.dia))
-        self.circles.append(ReshapeCircles((self.shape.x + self.shape.width)-(self.dia/2), self.shape.y-(self.dia/2),
-                                           self.dia))
-        self.circles.append(ReshapeCircles((self.shape.x + self.shape.width)-(self.dia/2),
-                                           (self.shape.y + self.shape.height)-(self.dia/2), self.dia))
-        self.circles.append(ReshapeCircles(self.shape.x-(self.dia/2), (self.shape.y + self.shape.height)-(self.dia/2),
-                                           self.dia))
-        # Sides
-        self.circles.append(ReshapeCircles(self.shape.x+(self.shape.width/2)-(self.dia/2), self.shape.y-(self.dia/2),
-                                           self.dia))
-        self.circles.append(ReshapeCircles((self.shape.x+self.shape.width)-(self.dia/2),
-                                           self.shape.y+(self.shape.height/2)-(self.dia/2), self.dia))
-        self.circles.append(ReshapeCircles(self.shape.x+(self.shape.width/2)-(self.dia/2),
-                                           self.shape.y+self.height-(self.dia/2), self.dia))
-        self.circles.append(ReshapeCircles(self.shape.x-(self.dia/2), self.shape.y+(self.shape.height/2)-(self.dia/2),
-                                           self. dia))
-
-    def reshape_draw(self):
-        for circle in self.circles:
-            circle.draw_reshape_circle()
-
-
-class ReshapeCircles(EduShape):
-    """
-    The individual circles will need to be widgets so its easy to
-    detect clicks on them
-    """
-    def __init__(self, x, y, dia):
-        self.x = x
-        self.y = y
-        self.dia = dia
-        self.width = dia
-        self.height = dia
-
-    def draw_reshape_circle(self):
-        Color(1, 1, 1)
-        Ellipse(pos=(self.x, self.y), size=(self.dia, self.dia))
-        Color(0, 0, 0)
-        Line(ellipse=(self.x, self.y, self.dia, self.dia))
 
 
 class EducorderCanvas(Widget):
@@ -251,24 +43,54 @@ class EducorderCanvas(Widget):
         self.draw_canvas()
         self.draw_canvas()
 
+        # Keyboard controls
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+    def _keyboard_closed(self):
+        # _keyboard_closed and _on_keyboard_down classes have been taken straight from kivy API docs
+        print('My keyboard have been closed!')
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        # _keyboard_closed and _on_keyboard_down classes have been taken straight from kivy API docs
+        if keycode[1] == 'delete':
+            self.delete_selected()
+        elif keycode[1] == 'escape':
+            keyboard.release()
+
+        self.draw_canvas()
+        return True
+
     def on_touch_down(self, touch):
         # We always want to store every click
         # Only draw if it is within the bounds of
         self.touch_down = touch.pos
-        self.draw_canvas()
-        if self.selected_mode:
+        if self.selected_mode:  # Drawing
             if self.check_touch_in_bounds(touch):
                 self.deselect_all()
-                self.draw_canvas()
 
-        else:
+        if self.any_selected():  # Reshaping or moving
+            # This is because the reshape circles are partly (or wholly) outside the shape
+            # So  without this, a click on the reshape would automatically deselect
+            for shape in self.shapes:
+                    if shape.selected:
+                        shape.start_move_shape(touch)
+                        for circle in shape.reshape_circles.circles:
+                            if circle.clicked_on(touch.x, touch.y):
+                                self.reshaping = shape.reshape_circles.circles.index(circle)
+            # This is to cover the case where clicking outside doesn't deselect shape.
+            if not self.reshaping:
+                self.select_clicked_on(touch)
+
+        else:  # Moving or selection box
             if self.check_touch_in_bounds(touch):
                 self.select_clicked_on(touch)
                 for shape in self.shapes:
                     if shape.selected:
-                        for circle in shape.reshape_circles.circles:
-                            if circle.clicked_on(touch.x, touch.y):
-                                self.reshaping = shape.reshape_circles.circles.index(circle)
+                        shape.start_move_shape(touch)
+        self.draw_canvas()
 
     def on_touch_move(self, touch):
         # To draw the shape as it is being drawn
@@ -403,6 +225,15 @@ class EducorderCanvas(Widget):
     def shape_in_selection(self, shape, x, y, width, height):
         return (x < shape.x < shape.x + shape.width < x + width) and \
                (y < shape.y < shape.y + shape.height < y + height)
+
+    def delete_selected(self):
+        shapes_to_delete = []
+        for shape in self.shapes:
+            if shape.selected:
+                shapes_to_delete.append(self.shapes.index(shape))
+        for shape in shapes_to_delete:
+            self.shapes.pop(shape)
+
 
 
 class EducorderApp(App):

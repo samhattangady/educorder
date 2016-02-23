@@ -2,10 +2,6 @@ Colour of line and fill
 EduShape.draw_shape()
 Temp fix: Hardcoded the colours
 
-Moving shapes after they have been drawn
-EduShape.move_shape()
-Currently when moving selected shapes, the center of shape gets anchored to mouse, rather than the shape being moved by whichever part of it was clicked/dragged by
-
 Moving shapes when many have been selected
 Not possible right now
 Just the one you drag with mouse moves, rest get deselected
@@ -25,3 +21,7 @@ Change whole location system
 Rather than just saving coordinates, convert them into a 16:9 format
 In that way reszing window will zoom in and out rather than losing material
 Will also have to see how to change all touch coordinates to that.
+
+Change the cursor icon when above a reshape circle
+
+Look into undo functionality
