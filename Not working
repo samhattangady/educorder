@@ -12,11 +12,6 @@ Instead it should get all to same mode on first click, then toggle from next
 
 
 TODO
-Add reshape circles to ellipse
-
-See what to do about selection of ellipses.
-Right now, clicks in bounding box will also select it
-
 Change whole location system
 Rather than just saving coordinates, convert them into a 16:9 format
 In that way reszing window will zoom in and out rather than losing material
