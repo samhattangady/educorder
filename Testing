@@ -1,0 +1,13 @@
+List of tests to make sure nothing is broken
+
+Draw shape
+select shape
+move shape
+reshape
+
+do all the above with another shape selected
+
+selection box
+
+delete shape
+delete shapes

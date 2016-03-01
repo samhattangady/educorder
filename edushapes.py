@@ -1,3 +1,5 @@
+from kivy.uix.label import Label
+from kivy.core.text import Label as CoreLabel
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle, Line, Ellipse
 
@@ -34,8 +36,8 @@ class EduShape(Widget):
     def clicked_on(self, x, y):
         # collide_point() doesn't seem to work correctly,
         # so wrote a function specifically
-        return (self.x < x < self.x + self.width) \
-            and (self.y < y < self.y + self.height)
+        return (self.x <= x <= self.x + self.width) \
+            and (self.y <= y <= self.y + self.height)
 
     def reallign_shape(self):
         # The operations are to make sure that heights and widths
@@ -166,6 +168,54 @@ class EducorderEllipse(EduShape):
             self.reshape_circles.reshape_draw()
 
 
+class EducorderLine(EduShape):
+    """
+        Basic line shape
+    """
+
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
+        super(EducorderLine,self).__init__(touch_down, touch_up, line_colour, fill_colour)
+        self.shape = 'Line'
+
+    def draw_shape(self):
+        if self.line:
+            Color(0, 0, 0)
+            Line(points=[self.x, self.y, self.x+self.width, self.y+self.height])
+        if self.selected:
+            self.reshape_circles.reshape_draw()
+
+    def reallign_shape(self):
+        # Left blank because lines are not based on just bounding box
+        # So they may need to have negative widths and heights
+        pass
+
+    def clicked_on(self, x_in, y_in):
+        x = x_in - self.x
+        y = y_in - self.y
+
+        return (abs((y / x) - (self.height / self.width)) < .1) and \
+            min(self.x, self.x+self.width) < x_in < max(self.x, self.x+self.width) and \
+            min(self.y, self.y+self.height) < y_in < max(self.y, self.y+self.height)
+
+
+class EducorderText(EduShape):
+    """
+        Text
+    """
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
+        super(EducorderText, self).__init__(touch_down, touch_up, line_colour, fill_colour)
+        self.shape = 'Text'
+
+    def draw_shape(self):
+        pass
+
+    def print_text(self):
+        Color(0, 0, 0)
+        self.label = CoreLabel()
+        self.label.text = 'HEllo WoRld'
+        self.label.refresh()
+
+
 class ReshapeCirclesParent(Widget):
     """
         The small circles in the corners that you drag
@@ -210,8 +260,12 @@ class ReshapeCirclesParent(Widget):
                                            self. dia))
 
     def reshape_draw(self):
-        for circle in self.circles:
-            circle.draw_reshape_circle()
+        if self.shape.shape == 'Line':
+            for circle in [self.circles[1], self.circles[3]]:
+                circle.draw_reshape_circle()
+        else:
+            for circle in self.circles:
+                circle.draw_reshape_circle()
 
 
 class ReshapeCircles(EduShape):
@@ -231,5 +285,3 @@ class ReshapeCircles(EduShape):
         Ellipse(pos=(self.x, self.y), size=(self.dia, self.dia))
         Color(0, 0, 0)
         Line(ellipse=(self.x, self.y, self.dia, self.dia))
-
-

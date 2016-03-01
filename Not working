@@ -8,17 +8,27 @@ Just the one you drag with mouse moves, rest get deselected
 
 When multiple shapes are selected, and we toggle, all get toggled;
 Instead it should get all to same mode on first click, then toggle from next
+Maybe only applicable for this build.
+When we add different colours for lines and fill, may not be applicable...
 
-When shapes overlap, and one is selected, and you try to move the other, it gets a little wonky
-
+Selecting a line
+Not really looked into it, just applied basics which may not even be right
+Selection works away from self.x, self.y. But near that point doesn't select
+Also scope for division by 0, especially if vertical line, width=0
 
 
 TODO
+
+Figure out how to connect menu to canvas
+
 Change whole location system
 Rather than just saving coordinates, convert them into a 16:9 format
 In that way reszing window will zoom in and out rather than losing material
 Will also have to see how to change all touch coordinates to that.
 
-Change the cursor icon when above a reshape circle
+Change the cursor icon when above a reshape circle,
+and in other cases. Like in drawing mode etc.
 
 Look into undo functionality
+
+Add EduText.
