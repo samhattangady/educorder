@@ -16,6 +16,11 @@ Not really looked into it, just applied basics which may not even be right
 Selection works away from self.x, self.y. But near that point doesn't select
 Also scope for division by 0, especially if vertical line, width=0
 
+Text needs to wrap around the box.
+
+Look into main boxlayout.
+Time to move to final layout and look of the app.
+
 
 TODO
 
@@ -30,5 +35,3 @@ Change the cursor icon when above a reshape circle,
 and in other cases. Like in drawing mode etc.
 
 Look into undo functionality
-
-Add EduText.

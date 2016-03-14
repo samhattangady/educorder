@@ -1,6 +1,6 @@
 from kivy.uix.label import Label
-from kivy.core.text import Label as CoreLabel
 from kivy.uix.widget import Widget
+from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle, Line, Ellipse
 
 
@@ -13,7 +13,7 @@ class EduShape(Widget):
         work right now.
     """
 
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour, text=None):
         # Initializing
         super(EduShape, self).__init__()
         # For use in specific init
@@ -122,8 +122,8 @@ class EducorderRectangle(EduShape):
     """
         Basic Rectangle Shape
     """
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
-        super(EducorderRectangle,self).__init__(touch_down, touch_up, line_colour, fill_colour)
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour, text=None):
+        super(EducorderRectangle,self).__init__(touch_down, touch_up, line_colour, fill_colour, text=None)
         self.shape = 'Rectangle'
 
     def draw_shape(self):
@@ -144,8 +144,8 @@ class EducorderEllipse(EduShape):
         Basic Ellipse Shape
     """
 
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
-        super(EducorderEllipse,self).__init__(touch_down, touch_up, line_colour, fill_colour)
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour, text=None):
+        super(EducorderEllipse,self).__init__(touch_down, touch_up, line_colour, fill_colour, text=None)
         self.shape = 'Ellipse'
 
     def clicked_on(self, x_in, y_in):
@@ -173,8 +173,8 @@ class EducorderLine(EduShape):
         Basic line shape
     """
 
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
-        super(EducorderLine,self).__init__(touch_down, touch_up, line_colour, fill_colour)
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour, text=None):
+        super(EducorderLine,self).__init__(touch_down, touch_up, line_colour, fill_colour, text=None)
         self.shape = 'Line'
 
     def draw_shape(self):
@@ -202,18 +202,18 @@ class EducorderText(EduShape):
     """
         Text
     """
-    def __init__(self, touch_down, touch_up, line_colour, fill_colour):
-        super(EducorderText, self).__init__(touch_down, touch_up, line_colour, fill_colour)
+    def __init__(self, touch_down, touch_up, line_colour, fill_colour, text):
+        super(EducorderText, self).__init__(touch_down, touch_up, line_colour, fill_colour, text)
         self.shape = 'Text'
+        self.text = text
+        self.label = None
+        self.input = None
 
     def draw_shape(self):
-        pass
-
-    def print_text(self):
         Color(0, 0, 0)
-        self.label = CoreLabel()
-        self.label.text = 'HEllo WoRld'
-        self.label.refresh()
+        self.label = Label(text=self.text, color=(0,0,0), pos=(self.x, self.y), size=(self.width, self.height))
+        if self.selected:
+            self.reshape_circles.reshape_draw()
 
 
 class ReshapeCirclesParent(Widget):

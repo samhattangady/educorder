@@ -1,7 +1,4 @@
 #!/usr/bin/python
-from kivy.properties import Clock
-from kivy.uix.scatter import Scatter
-
 from edushapes import *
 from edumenu import *
 
@@ -35,6 +32,8 @@ class EducorderCanvas(Widget):
         self.shapes = []
         self.selected_shapes = []
 
+        self.canvastextinput = TextInput(text='foo', size=(self.width, 50), pos=(0, 0))
+
         self.touch_down = None
         self.touch_up = None
 
@@ -50,7 +49,6 @@ class EducorderCanvas(Widget):
 
         # Drawing the canvas to start off
         self.draw_canvas()
-        self.draw_canvas()
 
         # Keyboard controls
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
@@ -58,9 +56,13 @@ class EducorderCanvas(Widget):
 
     def _keyboard_closed(self):
         # _keyboard_closed and _on_keyboard_down classes have been taken straight from kivy API docs
-        print('My keyboard have been closed!')
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard = None
+        pass
+        # No idea what this is for, so just keeping it.
+        # Keyboard closes whenever we try to use the textinput box
+        # We can no longer close with escape. But thats fine I guess
+        #print('My keyboard have been closed!')
+        #self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        #self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         # _keyboard_closed and _on_keyboard_down classes have been taken straight from kivy API docs
@@ -237,7 +239,7 @@ class EducorderCanvas(Widget):
                                  self.line_colour, self.fill_colour)
         elif self.modes[self.selected_mode] == 'Text':
             return EducorderText(self.touch_down, touch,
-                                 self.line_colour, self.fill_colour)
+                                 self.line_colour, self.fill_colour, self.canvastextinput.text)
         elif self.modes[self.selected_mode] == 'Standard':
             return EducorderSelectionRectangle(self.touch_down, touch, None, None)
 
@@ -246,16 +248,13 @@ class EducorderCanvas(Widget):
         if not self.menu:
             with self.canvas:
                 self.canvas.clear()
+                Color(1, 1, 1)
                 Rectangle(size=(self.width, self.height))
                 for shape in self.shapes:
                     shape.draw_shape()
-            self.draw_text_on_canvas()
-
-    def draw_text_on_canvas(self):
-        for shape in self.shapes:
-            if shape.shape == 'Text':
-                shape.print_text()
-                print 'text'
+                    '''if shape.shape == 'Text':
+                        shape.print_text()
+                        shape.add_widget(shape.label)'''
 
     def any_selected(self):
         return len(self.selected_shapes) != 0
@@ -290,6 +289,7 @@ class EducorderCanvas(Widget):
             Color(1, 0, 0, 0.3)
             Rectangle(pos=(self.width, self.height))
             self.menu.draw_menu()
+
 
     def handle_menu_click(self, touch):
         if not self.menu.clicked_on(touch):
@@ -382,6 +382,7 @@ class EducorderApp(App):
 
         root = BoxLayout(orientation='vertical')
         root.add_widget(buttons)
+        root.add_widget(self.main_canvas.canvastextinput)
         root.add_widget(self.main_canvas)
 
         return root

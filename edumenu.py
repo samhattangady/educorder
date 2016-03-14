@@ -16,6 +16,7 @@ class Canvas_Menu(Widget):
         self.shapes = shapes
         self.width = 200
         self.height = 300
+        self.label = Label(text='foo')
 
     def clicked_on(self, touch):
         x = touch.x
@@ -25,11 +26,8 @@ class Canvas_Menu(Widget):
             and (self.y <= y <= self.y + self.height)
 
     def draw_menu(self):
-        Color(1, 1, 0)
+        Color(0, 0, 0, .2)
+        Rectangle(pos=(self.x-3, self.y-3), size=(self.width+6, self.height+6))
+        Color(1, 1, 1)
         Rectangle(pos=(self.x, self.y), size=(self.width, self.height))
-        Color(0,0,0)
-        Label(text='Hi')
-
-
-
-
+        self.label = Label(text='foo', pos=(self.x, self.y), color=(0, 0, 0))
