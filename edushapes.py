@@ -211,7 +211,7 @@ class EducorderText(EduShape):
 
     def draw_shape(self):
         Color(0, 0, 0)
-        self.label = Label(text=self.text, color=(0,0,0), pos=(self.x, self.y), size=(self.width, self.height))
+        self.label = Label(text=self.text, color=(0, 0, 0), pos=(self.x, self.y), size=(self.width, self.height))
         if self.selected:
             self.reshape_circles.reshape_draw()
 

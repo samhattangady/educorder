@@ -21,10 +21,12 @@ Text needs to wrap around the box.
 Look into main boxlayout.
 Time to move to final layout and look of the app.
 
+Reshape circles are drawn below shapes over them. So for example if you have a line, and a box over it, and you want to change the line, you'll have to move the box.
+
 
 TODO
 
-Figure out how to connect menu to canvas
+Figure out how to connect menu to canvas ?
 
 Change whole location system
 Rather than just saving coordinates, convert them into a 16:9 format

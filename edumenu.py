@@ -1,7 +1,14 @@
+from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle
 
+
+class Edumenu_Button(Button):
+    """
+        Parent class for all the buttons in menus
+        It should make theming etc much easier later on
+    """
 
 
 class Canvas_Menu(Widget):
