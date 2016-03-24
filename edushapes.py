@@ -1,6 +1,5 @@
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle, Line, Ellipse
 
 
@@ -214,7 +213,6 @@ class EducorderText(EduShape):
         self.label = Label(text=self.text, color=(0, 0, 0), pos=(self.x, self.y), size=(self.width, self.height))
         if self.selected:
             self.reshape_circles.reshape_draw()
-
 
 class ReshapeCirclesParent(Widget):
     """
